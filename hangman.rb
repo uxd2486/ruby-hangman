@@ -13,6 +13,7 @@ end
 def print_display(count, displayed_word)
   puts "Turns remaining: #{count}"
   displayed_word.each_char { |char| print "#{char} " }
+  puts
 end
 
 def update_display(letter, chosen_word, displayed_word)
@@ -24,6 +25,14 @@ def update_display(letter, chosen_word, displayed_word)
   displayed_word
 end
 
+def validate_input(string)
+  string = string.downcase
+  return unless string.length == 1
+  return unless /\A[a-z]\z/.match string
+
+  string
+end
+
 def play
   puts 'Let\'s play Hangman!'
   chosen = pick_word
@@ -31,9 +40,12 @@ def play
   displayed = '_' * tries
   until tries.zero?
     print_display(tries, displayed)
-    puts
     print 'Have a guess: '
-    guess = gets.chomp.downcase
+    guess = validate_input(gets.chomp)
+    if guess.nil?
+      puts 'Invalid input'
+      next
+    end
     if chosen.include? guess
       puts 'Good guess!'
       update_display(guess, chosen, displayed)
