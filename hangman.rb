@@ -1,29 +1,6 @@
 # frozen_string_literal: true
 
-def pick_word
-  words = IO.readlines('google-10000-english-no-swears.txt')
-  chosen_word = nil
-  while chosen_word.nil?
-    chosen_word = words[rand(words.length)].strip
-    chosen_word = nil if chosen_word.length > 12 || chosen_word.length < 5
-  end
-  chosen_word
-end
-
-def print_display(count, displayed_word)
-  puts "Turns remaining: #{count}"
-  displayed_word.each_char { |char| print "#{char} " }
-  puts
-end
-
-def update_display(letter, chosen_word, displayed_word)
-  index = chosen_word.index(letter)
-  until index.nil?
-    displayed_word[index] = letter
-    index = chosen_word.index(letter, index + 1)
-  end
-  displayed_word
-end
+require_relative 'game'
 
 def validate_input(string)
   string = string.downcase
@@ -35,30 +12,19 @@ end
 
 def play
   puts 'Let\'s play Hangman!'
-  chosen = pick_word
-  tries = chosen.length
-  displayed = '_' * tries
-  until tries.zero?
-    print_display(tries, displayed)
+  game = Game.new
+  until game.over?
+    game.print_display
     print 'Have a guess: '
     guess = validate_input(gets.chomp)
     if guess.nil?
       puts 'Invalid input'
       next
     end
-    if chosen.include? guess
-      puts 'Good guess!'
-      update_display(guess, chosen, displayed)
-    else
-      puts 'Wrong guess!'
-      tries -= 1
-    end
+    game.check_guess(guess)
     puts
-    break if chosen.eql? displayed
   end
-  puts 'You win!' if chosen.eql? displayed
-  puts 'You lose :(' if tries.zero?
-  puts "The word is #{chosen}."
+  game.end_message
 end
 
 play
