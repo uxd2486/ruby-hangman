@@ -9,3 +9,8 @@ def pick_word
   end
   chosen_word
 end
+
+def print_display(count, displayed_word)
+  puts "Turns remaining: #{count}"
+  displayed_word.each_char { |char| print "#{char} " }
+end
