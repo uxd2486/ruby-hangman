@@ -23,3 +23,30 @@ def update_display(letter, chosen_word, displayed_word)
   end
   displayed_word
 end
+
+def play
+  puts 'Let\'s play Hangman!'
+  chosen = pick_word
+  tries = chosen.length
+  displayed = '_' * tries
+  until tries.zero?
+    print_display(tries, displayed)
+    puts
+    print 'Have a guess: '
+    guess = gets.chomp.downcase
+    if chosen.include? guess
+      puts 'Good guess!'
+      update_display(guess, chosen, displayed)
+    else
+      puts 'Wrong guess!'
+      tries -= 1
+    end
+    puts
+    break if chosen.eql? displayed
+  end
+  puts 'You win!' if chosen.eql? displayed
+  puts 'You lose :(' if tries.zero?
+  puts "The word is #{chosen}."
+end
+
+play
