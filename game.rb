@@ -48,4 +48,16 @@ class Game
     puts 'You lose :(' if @tries.zero?
     puts "The word is #{@chosen}."
   end
+
+  def save(filename)
+    Dir.mkdir('saves') unless Dir.exist?('saves')
+    filename = "saves/#{filename}.save"
+
+    File.open(filename, 'w') do |file|
+      file.puts @chosen
+      file.puts @displayed
+      file.puts @tries
+      filename
+    end
+  end
 end
