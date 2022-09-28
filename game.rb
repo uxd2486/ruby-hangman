@@ -67,11 +67,12 @@ class Game
     file = File.open(filename, 'r')
     chosen = file.gets.chomp
     displayed = file.gets.chomp
-    tries = file.gets.chomp
+    tries = file.gets.chomp.to_i
     file.close
     game.instance_variable_set(:@chosen, chosen)
     game.instance_variable_set(:@displayed, displayed)
     game.instance_variable_set(:@tries, tries)
+    File.delete(filename)
     game
   end
 end
