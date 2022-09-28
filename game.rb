@@ -60,4 +60,18 @@ class Game
       filename
     end
   end
+
+  def self.load_game(filename)
+    filename = "saves/#{filename}.save"
+    game = Game.new
+    file = File.open(filename, 'r')
+    chosen = file.gets.chomp
+    displayed = file.gets.chomp
+    tries = file.gets.chomp
+    file.close
+    game.instance_variable_set(:@chosen, chosen)
+    game.instance_variable_set(:@displayed, displayed)
+    game.instance_variable_set(:@tries, tries)
+    game
+  end
 end
