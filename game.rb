@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'json'
+
 class Game
   def initialize
     @chosen = pick_word
@@ -54,25 +58,35 @@ class Game
     filename = "saves/#{filename}.save"
 
     File.open(filename, 'w') do |file|
-      file.puts @chosen
-      file.puts @displayed
-      file.puts @tries
+      file.puts to_json
       filename
     end
   end
 
   def self.load_game(filename)
     filename = "saves/#{filename}.save"
-    game = Game.new
-    file = File.open(filename, 'r')
-    chosen = file.gets.chomp
-    displayed = file.gets.chomp
-    tries = file.gets.chomp.to_i
-    file.close
-    game.instance_variable_set(:@chosen, chosen)
-    game.instance_variable_set(:@displayed, displayed)
-    game.instance_variable_set(:@tries, tries)
+    obj = ''
+    File.open(filename, 'r') do |file|
+      obj = file.read
+    end
     File.delete(filename)
+    JSON.parse(obj, create_additions: true)
+  end
+
+  def to_json(*args)
+    {
+      JSON.create_id => self.class.name,
+      'chosen' => @chosen,
+      'displayed' => @displayed,
+      'tries' => @tries
+    }.to_json(*args)
+  end
+
+  def self.json_create(obj)
+    game = Game.new
+    game.instance_variable_set(:@chosen, obj['chosen'])
+    game.instance_variable_set(:@displayed, obj['displayed'])
+    game.instance_variable_set(:@tries, obj['tries'])
     game
   end
 end
